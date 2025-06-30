@@ -119,7 +119,7 @@
             
             if(youtubeLink) {
                 document.getElementById('loading-circle').style.display = 'block';
-                loadIndicator.classList.remove('hidden');                 
+                //loadIndicator.classList.remove('hidden');                 
                 blogContent.innerHTML = ''; // Clear previous content
 
                 const endpointUrl = '/generate-blog';  
@@ -136,12 +136,12 @@
 
                     //whatever response we get, we want to showcase that in the blog content 
                     blogContent.innerHTML = data.content;
-                    loadingIndicator.classlist.add('hidden');
+                    //loadingIndicator.classlist.add('hidden');
 
                 } catch (error) {
                     console.error("Error occurred:", error);
                     alert("Something went wrong. Please try again later.");
-                    loadingIndicator.classlist.add('hidden');
+                    //loadingIndicator.classlist.add('hidden');
                 }
                 document.getElementById('loading-circle').style.display = 'none';
             } else {
