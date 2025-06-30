@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script> 
+</head>
+<body class="flex flex-col min-h-screen bg-gray-100 font-sans antialiased">
+    <!-- Nav Bar -->
+     <nav class="bg-blue-600 p-4 text-white flex justify-between">
+        <div class="container mx-auto">
+            <h1 class="text-3xl font-bold">AI Blog Generator</h1>
+        </div>
+        <div>
+            <a href="login" class="text-white hover:text-gray-200 px-4">Login</a>
+            <a href="signup" class="text-white hover:text-gray-200 px-4">SignUp</a>
+        </div>
+    </nav>
+    <!-- Main Content -->
+     <div class="flex items-center justify-center h-screen">
+        <div class="bg-white p-8 shadow-md rounded-lg max-w-md w-full">
+            <!-- Login Form -->
+             <form class="space-y-4" action="" method='POST'>
+                {% csrf_token %}
+                {% if error_message %}
+                    <div align="center" style="color: red;">
+                        <h2>{{ error_message }}</h2>
+                    </div>
+                {% endif %}
+                <h2 class="text-xl font-semibold">Login</h2>
+                <div>
+                    <label for="username" class="block mb1 font-medium">Username</label>
+                    <input type="text" id="username" name="username" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="password" class="block mb1 font-medium">Password</label>
+                    <input type="text" id="password" name="password" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Login
+                    </button>
+
+             </form>
+
+        </div>
+     </div>
+</body>
+</html>
