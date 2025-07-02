@@ -10,6 +10,7 @@ import json
 from pytubefix import YouTube 
 import assemblyai as aai
 import openai
+from .models import BlogPost
 
 # Create your views here.
 @login_required
@@ -55,6 +56,13 @@ def generate_blog(request):
             return JsonResponse({'error': 'failed to generate response from openAI'}, status = 500)
         
         # save blog article to DB
+        new_blog_article = BlogPost.objects.create(
+            user = request.user,
+            youtube_title = title,
+            youtube_link = yt_link,
+            generated_content=content
+        )
+        new_blog_article.save()
          
         # return blog article as a response
         return JsonResponse({'content' : content}) 
@@ -100,6 +108,7 @@ def generate_blog_response(transcription):
         n=1
     )
     return response.choices[0].message.content.strip()
+
 def user_signup(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -127,3 +136,14 @@ def user_logout(request):
     logout(request)
     return redirect('/')
 
+def blog_list(request):
+    blog_articles = BlogPost.objects.filter(user=request.user)
+    return render(request, "all-blogs.html", {'blog_articles': blog_articles})
+
+def blog_details(request, pk):
+    blog_article_details = BlogPost.objects.get(id=pk)
+    if request.user == blog_article_details.user:
+        return render(request, 'blog-details.html',{'blog_article_details': blog_article_details})
+    else:
+        return redirect('/')
+    
