@@ -1,1 +1,1 @@
-# youtube_summarizer
+Video paraphrasing using gpt4-0 completions
