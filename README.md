@@ -1,1 +1,1 @@
-Video paraphrasing using gpt4-0 completions
+Video paraphrasing using gpt 4.0 completions endpoint
