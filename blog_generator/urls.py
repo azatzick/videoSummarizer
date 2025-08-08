@@ -7,5 +7,8 @@ urlpatterns = [
     path('logout', views.user_logout, name='logout'),
     path('generate-blog', views.generate_blog, name ='generate_blog'),
     path('blog-list', views.blog_list, name ='blog_list'),
-    path('blog-details/<int:pk>/', views.blog_details, name ='blog_details')
+    path('blog-details/<int:pk>/', views.blog_details, name ='blog_details'),
+    path('blog-edit/<int:pk>/', views.edit_blog, name='edit_blog'),
+    path('blog-delete/<int:pk>/', views.delete_blog, name='delete_blog'),
+    path('blog-export/<int:pk>/', views.export_blog_markdown, name='export_blog'),
 ]

@@ -1,11 +1,13 @@
 import os
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.core.paginator import Paginator
+from django.db.models import Q
 import json
 from pytubefix import YouTube 
 import assemblyai as aai
@@ -13,23 +15,26 @@ import openai
 from .models import BlogPost
 
 # Create your views here.
+#decorator - login required meaning index.html will only render when user is logged in
 @login_required
 def index(request):
     return render(request, 'index.html')
 
+
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        username = request.POST['username'] 
         password = request.POST['password']
 
         user = authenticate(request, username=username, password=password)
-        if user is not None:
+        if user is not None: 
             login(request, user)
             return redirect('/')
         else:
             error_message = "Invalid username or password"
             return render(request, 'login.html', {'error_message': error_message})
     return render(request, 'login.html')
+
 
 @csrf_exempt
 def generate_blog(request):
@@ -39,7 +44,7 @@ def generate_blog(request):
             data = json.loads(request.body)
             yt_link = data['link']
             #return JsonResponse({'content':yt_link })
-        except(KeyError, json.JSONDecodeError):
+        except (KeyError, json.JSONDecodeError):
             return JsonResponse({'error': 'invalid data sent',}, status=400)
         
         # get title of the video 
@@ -70,10 +75,12 @@ def generate_blog(request):
     else:
         return JsonResponse({'error': 'invalid request method',}, status=405)
         
+
 def yt_title(link):
     yt= YouTube(link)
     title = yt.title
     return title
+
 
 def download_audio(link):
     yt = YouTube(link)
@@ -84,6 +91,7 @@ def download_audio(link):
     os.rename(out_file, new_file)
     return new_file
 
+
 def get_transcript(link):
     audio_file = download_audio(link)
     aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")  # Ensure you have set your AssemblyAI API key in your environment variables
@@ -91,6 +99,7 @@ def get_transcript(link):
     transcript = transcriber.transcribe(audio_file)
     return transcript.text
     
+
 def generate_blog_response(transcription):
     openai.api_key = os.getenv("OPENAI_API_KEY")  # Ensure you have set your OpenAI API key in your environment variables
     prompt = f"Based on the following transcript from a YouTube video, write a comprehensive blog article, write it based on the transcript, but dont make it look like a youtube video, make it look like a proper blog article:\n\n{transcription}\n\nArticle:"
@@ -109,6 +118,7 @@ def generate_blog_response(transcription):
     )
     return response.choices[0].message.content.strip()
 
+
 def user_signup(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -123,7 +133,7 @@ def user_signup(request):
                 user.save()
                 login(request,user)
                 return redirect('/')  # Redirect to the homepage page after signup
-            except:
+            except Exception:
                 error_message = "error creating account"
                 return render(request, 'signup.html', {'error_message': error_message})
         else: 
@@ -132,18 +142,65 @@ def user_signup(request):
     return render(request, 'signup.html')
 
 
+@login_required
 def user_logout(request):
     logout(request)
-    return redirect('/')
+    return redirect('login')
 
+
+@login_required
 def blog_list(request):
-    blog_articles = BlogPost.objects.filter(user=request.user)
-    return render(request, "all-blogs.html", {'blog_articles': blog_articles})
+    query = request.GET.get('q', '').strip()
+    articles = BlogPost.objects.filter(user=request.user)
+    if query:
+        articles = articles.filter(
+            Q(youtube_title__icontains=query) | Q(generated_content__icontains=query)
+        )
+    paginator = Paginator(articles.order_by('-created_at'), 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, "all-blogs.html", { 'page_obj': page_obj, 'query': query })
 
+
+@login_required
 def blog_details(request, pk):
-    blog_article_details = BlogPost.objects.get(id=pk)
-    if request.user == blog_article_details.user:
-        return render(request, 'blog-details.html',{'blog_article_details': blog_article_details})
-    else:
-        return redirect('/')
+    blog_article_details = get_object_or_404(BlogPost, id=pk, user=request.user)
+    return render(request, 'blog-details.html',{'blog_article_details': blog_article_details})
+
+
+@login_required
+def edit_blog(request, pk):
+    article = get_object_or_404(BlogPost, id=pk, user=request.user)
+    if request.method == 'POST':
+        new_title = request.POST.get('youtube_title', '').strip()
+        new_link = request.POST.get('youtube_link', '').strip()
+        new_content = request.POST.get('generated_content', '').strip()
+        if new_title:
+            article.youtube_title = new_title
+        if new_link:
+            article.youtube_link = new_link
+        if new_content:
+            article.generated_content = new_content
+        article.save()
+        return redirect('blog_details', pk=article.id)
+    return render(request, 'edit-blog.html', { 'article': article })
+
+
+@login_required
+def delete_blog(request, pk):
+    article = get_object_or_404(BlogPost, id=pk, user=request.user)
+    if request.method == 'POST':
+        article.delete()
+        return redirect('blog_list')
+    return redirect('blog_details', pk=pk)
+
+
+@login_required
+def export_blog_markdown(request, pk):
+    article = get_object_or_404(BlogPost, id=pk, user=request.user)
+    filename = f"{article.youtube_title[:50].replace(' ', '_')}.md"
+    md_content = f"# {article.youtube_title}\n\nSource: {article.youtube_link}\n\n---\n\n{article.generated_content}\n"
+    response = HttpResponse(md_content, content_type='text/markdown; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
     

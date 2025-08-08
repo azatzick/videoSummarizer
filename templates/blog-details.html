@@ -1,42 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Post Details</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-grat-100 font-sans antialiased">
+{% extends 'base.html' %}
+{% block title %}{{ blog_article_details.youtube_title }} · AI Blog Generator{% endblock %}
 
-    <!-- Navbar -->
-    <nav class="bg-blue-600 p-4 text-white flex justify-between">
-        <div>
-            <h1 class="text-3xl font-bold">AI Blog Generator</h1>
-        </div>
-        <div>
-            <a href="#" class="text-white hover:underline mx-4">Welcome {{ user.username }}</a>
-            <a href="/blog-list" class="text-white hover:underline mx-4">Saved Blog Posts</a>
-            <a href="#" class="text-white hover:underline">Logout</a>
-        </div>
-    </nav>
+{% block content %}
+<article class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow">
+  <header class="mb-4">
+    <h1 class="text-2xl font-semibold">{{ blog_article_details.youtube_title }}</h1>
+    <div class="mt-1 text-sm text-gray-500">Created {{ blog_article_details.created_at }}</div>
+  </header>
 
-    <!-- Main Content -->
-    <div class="container mx-auto mt-10 px-4 sm:px-0">
-        <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
+  <div class="prose max-w-none">
+    {{ blog_article_details.generated_content|linebreaks }}
+  </div>
 
-            <section>
-                <h2 class="text-xl mb-4 font-semibold">Blog Post Details</h2>
-                <div class="border border-gray-300 p-4 rounded-lg">
-                    <h3 class="text-lg font-semibold">{{ blog_article_details.youtube_title }}</h3>
-                    <p class="text-gray-700">{{ blog_article_details.generated_content }}</p>
-                    <hr class="my-4 border-gray-300">
-                    <h4 class="text-lg font-semibold">Youtube Title</h4>
-                    <p class="text-gray-700">{{ blog_article_details.youtube_title }}</p>
-                    <h4 class="text-lg font-semibold mt-4">Youtube Link</h4>
-                    <a href="{{ blog_article_details.youtube_link }}" class="text-blue-600 hover:underline">{{ blog_article_details.youtube_link }}</a>
-                </div>
-            </section>
-        </div>
-    </div>
-</body>
-</html>
+  <hr class="my-6" />
+
+  <section class="text-sm">
+    <div class="font-medium text-gray-700">Source video</div>
+    <a class="text-blue-600 hover:underline break-all" href="{{ blog_article_details.youtube_link }}" target="_blank" rel="noopener">{{ blog_article_details.youtube_link }}</a>
+  </section>
+
+  <div class="mt-6 flex flex-wrap gap-3">
+    <a class="px-3 py-1.5 border rounded hover:bg-gray-50" href="{% url 'blog_list' %}">Back to list</a>
+    <a class="px-3 py-1.5 border rounded hover:bg-gray-50" href="{% url 'edit_blog' blog_article_details.id %}">Edit</a>
+    <a class="px-3 py-1.5 border rounded hover:bg-gray-50" href="{% url 'export_blog' blog_article_details.id %}">Export Markdown</a>
+    <form action="{% url 'delete_blog' blog_article_details.id %}" method="post" onsubmit="return confirm('Delete this post?');">
+      {% csrf_token %}
+      <button class="px-3 py-1.5 border border-red-600 text-red-700 rounded hover:bg-red-50">Delete</button>
+    </form>
+  </div>
+</article>
+{% endblock %}

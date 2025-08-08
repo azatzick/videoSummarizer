@@ -1,50 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Blog Posts</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 font-sans antialized">
-    <!-- Nav Bar -->
-     <nav class="bg-blue-600 p-4 text-white flex justify-between">
-        <div class="container mx-auto">
-            <h1 class="text-3xl font-bold">AI Blog Generator</h1>
-        </div>
-        <div>
-            <a href="#" class="text-white hover:text-gray-200 px-4">Logout</a>
-        </div>
-    </nav>
+{% extends 'base.html' %}
+{% block title %}My Posts · AI Blog Generator{% endblock %}
 
-    <!-- Main Content Container-->
-     <div class="container mx-auto p-8">
-        <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md"> 
-            <!--Blog Posts Section-->
-            <section>
-                <h2 class="text-xl mb-4 font-semibold">Blog Posts</h2>
-                <div class="space-y-4">
+{% block content %}
+<div class="max-w-4xl mx-auto">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-2xl font-semibold">Saved Blog Posts</h2>
+    <a href="/" class="text-blue-600 hover:underline">+ New</a>
+  </div>
 
-                    {% for article in blog_articles reversed %}
-                    <a href='blog-details/{{article.id}}'>
-                        <div class="border border-gray-300 p-4 rounded bg-white shadow">
-                            <h3 class="text-lg font-semibold">{{article.youtube_title}}</h3>
-                            <p>{{article.generated_content|truncatechars:80}}</p>
-                        </div>
-                    </a>
-                    {% endfor %}
-
-                </div>
-                 <!--repeat-->
-            </section>
-        </div>
-     </div>
-      <div>
-        <footer>
-            <div class="text-center text-blacl mt-6">
-                <p>2025 AI Blog Generator.</p>
-            </div>
-        </footer>
+  <form method="get" class="mb-6">
+    <div class="flex">
+      <input type="text" name="q" value="{{ query }}" placeholder="Search by title or content..." class="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <button class="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700">Search</button>
     </div>
-</body>
-</html>
+  </form>
+
+  <div class="space-y-3">
+    {% for article in page_obj.object_list %}
+      <div class="border border-gray-200 rounded-md bg-white p-4 shadow-sm">
+        <div class="flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <a href="{% url 'blog_details' article.id %}" class="block">
+              <h3 class="text-lg font-semibold truncate">{{ article.youtube_title }}</h3>
+            </a>
+            <p class="text-gray-600 mt-1">{{ article.generated_content|truncatechars:140 }}</p>
+            <p class="text-xs text-gray-400 mt-1">{{ article.created_at }}</p>
+          </div>
+          <div class="flex flex-col gap-2 shrink-0">
+            <a class="text-blue-600 hover:underline" href="{% url 'blog_details' article.id %}">Open</a>
+            <a class="text-gray-700 hover:underline" href="{% url 'edit_blog' article.id %}">Edit</a>
+            <a class="text-green-700 hover:underline" href="{% url 'export_blog' article.id %}">Export</a>
+            <form action="{% url 'delete_blog' article.id %}" method="post" onsubmit="return confirm('Delete this post?');">
+              {% csrf_token %}
+              <button class="text-red-600 hover:underline">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="text-gray-600">No posts found.</div>
+    {% endfor %}
+  </div>
+
+  <div class="flex items-center justify-between mt-6">
+    <div class="text-sm text-gray-600">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</div>
+    <div class="flex gap-2">
+      {% if page_obj.has_previous %}
+        <a class="px-3 py-1 border rounded hover:bg-gray-50" href="?q={{ query }}&page={{ page_obj.previous_page_number }}">Previous</a>
+      {% endif %}
+      {% if page_obj.has_next %}
+        <a class="px-3 py-1 border rounded hover:bg-gray-50" href="?q={{ query }}&page={{ page_obj.next_page_number }}">Next</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
