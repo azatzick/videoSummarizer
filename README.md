@@ -1,7 +1,5 @@
 Video paraphrasing using gpt 4.0 completions endpoint
 
-Video paraphrasing using gpt 4.0 completions endpoint
-
 ## Setup
 - Create a virtualenv and install deps:
   - python3 -m venv .venv && source .venv/bin/activate
