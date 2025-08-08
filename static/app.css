@@ -1,0 +1,20 @@
+/* Shared UI helpers */
+.btn-primary {
+  @apply inline-flex items-center justify-center text-white bg-gradient-to-r from-fuchsia-600 to-violet-700 px-4 py-2 rounded-xl shadow-soft hover:brightness-110 transition;
+}
+.btn-secondary {
+  @apply inline-flex items-center justify-center text-violet-800 bg-violet-50 px-4 py-2 rounded-xl border border-violet-100 hover:bg-violet-100 transition;
+}
+.btn-ghost {
+  @apply inline-flex items-center justify-center px-4 py-2 rounded-xl border border-gray-200 hover:bg-white transition;
+}
+.chip {
+  @apply inline-flex items-center justify-center px-3 py-1 text-sm rounded-lg border border-gray-200 hover:bg-white transition;
+}
+.chip-danger {
+  @apply border-rose-200 text-rose-700 hover:bg-rose-50;
+}
+.loading-dot {
+  width: 8px; height: 8px; border-radius: 9999px; background: #6d28d9; display: inline-block; box-shadow: 16px 0 0 #6d28d9, 32px 0 0 #6d28d9; animation: loading 1s infinite linear;
+}
+@keyframes loading { 0% { box-shadow: 16px 0 0 #6d28d9, 32px 0 0 #6d28d9; } 50% { box-shadow: 0 0 0 #6d28d9, 16px 0 0 #6d28d9; } 100% { box-shadow: 16px 0 0 #6d28d9, 32px 0 0 #6d28d9; } } 

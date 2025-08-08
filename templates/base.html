@@ -1,36 +1,68 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}AI Blog Generator{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#f8f5ff', 100: '#efe9ff', 200: '#ddceff', 300: '#c0a3ff', 400: '#a178ff',
+              500: '#8a5bff', 600: '#6f3cff', 700: '#5a2de6', 800: '#4825b4', 900: '#3b2091'
+            }
+          },
+          boxShadow: {
+            soft: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)'
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="{% static 'app.css' %}">
   {% block head %}{% endblock %}
 </head>
-<body class="min-h-screen bg-gray-50 text-gray-900">
-  <nav class="bg-blue-600 text-white">
-    <div class="max-w-6xl mx-auto px-4">
+<body class="min-h-screen bg-gradient-to-br from-rose-50 via-violet-50 to-sky-50 text-gray-900">
+  <div aria-hidden="true" class="fixed inset-0 -z-10 overflow-hidden">
+    <div class="absolute -top-32 -right-24 h-80 w-80 rounded-full blur-3xl bg-gradient-to-br from-fuchsia-300/40 to-sky-300/40"></div>
+    <div class="absolute -bottom-32 -left-24 h-80 w-80 rounded-full blur-3xl bg-gradient-to-br from-rose-300/40 to-violet-300/40"></div>
+  </div>
+
+  <nav class="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-white/60 bg-white/70 border-b border-white/40">
+    <div class="max-w-7xl mx-auto px-4">
       <div class="flex justify-between items-center h-16">
-        <a href="/" class="font-semibold tracking-wide">AI-Powered YouTube Summarizer</a>
-        <div class="flex items-center gap-4">
+        <a href="/" class="inline-flex items-center gap-2">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow-soft">AI</span>
+          <span class="font-semibold tracking-wide">YouTube → Blog</span>
+        </a>
+        <div class="flex items-center gap-2">
           {% if user.is_authenticated %}
-            <span class="hidden sm:inline">Welcome {{ user.username }}</span>
-            <a class="hover:underline" href="/blog-list">Saved Posts</a>
-            <a class="hover:underline" href="/logout">Logout</a>
+            <span class="hidden sm:inline text-sm text-gray-600">Hi, {{ user.username }}</span>
+            <a class="btn-secondary" href="/blog-list">Saved Posts</a>
+            <a class="btn-ghost" href="/logout">Logout</a>
           {% else %}
-            <a class="hover:underline" href="/login">Login</a>
-            <a class="hover:underline" href="/signup">Sign Up</a>
+            <a class="btn-ghost" href="/login">Login</a>
+            <a class="btn-primary" href="/signup">Sign Up</a>
           {% endif %}
         </div>
       </div>
     </div>
   </nav>
 
-  <main class="max-w-6xl mx-auto px-4 py-8">
+  <main class="max-w-7xl mx-auto px-4 py-10">
     {% if messages %}
-      <div class="space-y-2 mb-4">
+      <div class="space-y-2 mb-6">
         {% for message in messages %}
-          <div class="p-3 rounded bg-blue-50 text-blue-800">{{ message }}</div>
+          <div class="p-3 rounded-lg bg-violet-50 text-violet-800 border border-violet-100 shadow-sm">{{ message }}</div>
         {% endfor %}
       </div>
     {% endif %}
@@ -38,10 +70,12 @@
     {% block content %}{% endblock %}
   </main>
 
-  <footer class="border-t mt-12">
-    <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-600 flex justify-between">
-      <span>© 2025 AI Blog Generator</span>
-      <a class="hover:underline" href="https://www.youtube.com/codewithtomi" target="_blank" rel="noopener">Code With Tomi</a>
+  <footer class="mt-16">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="rounded-2xl border border-white/60 bg-white/70 backdrop-blur p-4 flex items-center justify-between text-sm text-gray-600">
+        <span>© 2025 AI Blog Generator</span>
+        <a class="hover:text-gray-900 transition" href="https://www.youtube.com/codewithtomi" target="_blank" rel="noopener">Code With Tomi</a>
+      </div>
     </div>
   </footer>
 

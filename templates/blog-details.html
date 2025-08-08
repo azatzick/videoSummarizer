@@ -2,13 +2,13 @@
 {% block title %}{{ blog_article_details.youtube_title }} · AI Blog Generator{% endblock %}
 
 {% block content %}
-<article class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow">
+<article class="rounded-3xl border border-white/60 bg-white/70 backdrop-blur p-6 shadow-soft">
   <header class="mb-4">
-    <h1 class="text-2xl font-semibold">{{ blog_article_details.youtube_title }}</h1>
+    <h1 class="text-2xl font-semibold bg-gradient-to-r from-fuchsia-600 to-violet-700 bg-clip-text text-transparent">{{ blog_article_details.youtube_title }}</h1>
     <div class="mt-1 text-sm text-gray-500">Created {{ blog_article_details.created_at }}</div>
   </header>
 
-  <div class="prose max-w-none">
+  <div class="prose prose-indigo max-w-none">
     {{ blog_article_details.generated_content|linebreaks }}
   </div>
 
@@ -16,16 +16,16 @@
 
   <section class="text-sm">
     <div class="font-medium text-gray-700">Source video</div>
-    <a class="text-blue-600 hover:underline break-all" href="{{ blog_article_details.youtube_link }}" target="_blank" rel="noopener">{{ blog_article_details.youtube_link }}</a>
+    <a class="text-violet-700 hover:underline break-all" href="{{ blog_article_details.youtube_link }}" target="_blank" rel="noopener">{{ blog_article_details.youtube_link }}</a>
   </section>
 
-  <div class="mt-6 flex flex-wrap gap-3">
-    <a class="px-3 py-1.5 border rounded hover:bg-gray-50" href="{% url 'blog_list' %}">Back to list</a>
-    <a class="px-3 py-1.5 border rounded hover:bg-gray-50" href="{% url 'edit_blog' blog_article_details.id %}">Edit</a>
-    <a class="px-3 py-1.5 border rounded hover:bg-gray-50" href="{% url 'export_blog' blog_article_details.id %}">Export Markdown</a>
+  <div class="mt-6 flex flex-wrap gap-2">
+    <a class="chip" href="{% url 'blog_list' %}">Back to list</a>
+    <a class="chip" href="{% url 'edit_blog' blog_article_details.id %}">Edit</a>
+    <a class="chip" href="{% url 'export_blog' blog_article_details.id %}">Export Markdown</a>
     <form action="{% url 'delete_blog' blog_article_details.id %}" method="post" onsubmit="return confirm('Delete this post?');">
       {% csrf_token %}
-      <button class="px-3 py-1.5 border border-red-600 text-red-700 rounded hover:bg-red-50">Delete</button>
+      <button class="chip chip-danger">Delete</button>
     </form>
   </div>
 </article>
