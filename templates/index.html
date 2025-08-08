@@ -2,31 +2,31 @@
 {% block title %}Home · AI Blog Generator{% endblock %}
 
 {% block content %}
-<section class="grid lg:grid-cols-2 gap-8 items-start">
-  <div class="rounded-3xl border border-white/60 bg-white/70 backdrop-blur p-6 shadow-soft">
+<section class="grid grid-cols-12 gap-10 xl:gap-12 items-stretch">
+  <div class="col-span-12 lg:col-span-7 xl:col-span-8 rounded-3xl border border-white/60 bg-white/70 backdrop-blur p-8 xl:p-10 shadow-soft min-h-[45vh]">
     <div class="mb-6">
-      <h2 class="text-2xl font-semibold tracking-tight bg-gradient-to-r from-rose-600 to-red-700 bg-clip-text text-transparent">Generate a Blog from YouTube</h2>
-      <p class="text-gray-600 mt-1">Paste a YouTube URL. We’ll transcribe and transform it into a polished article.</p>
+      <h2 class="text-3xl lg:text-4xl font-semibold tracking-tight bg-gradient-to-r from-rose-600 to-red-700 bg-clip-text text-transparent">Generate a Blog from YouTube</h2>
+      <p class="text-gray-600 mt-2 text-base lg:text-lg">Paste a YouTube URL. We’ll transcribe and transform it into a polished article.</p>
     </div>
 
     <div>
       <label for="youtubeLink" class="block text-sm font-medium text-gray-700 mb-2">YouTube Link</label>
       <div class="flex">
-        <input id="youtubeLink" type="url" placeholder="https://www.youtube.com/watch?v=..." class="flex-grow p-3 border border-gray-200 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-red-500 bg-white/60" />
-        <button id="generateBlogButton" class="px-5 rounded-r-xl inline-flex items-center justify-center text-white bg-red-600 hover:bg-red-700 shadow-soft transition">Generate</button>
+        <input id="youtubeLink" type="url" placeholder="https://www.youtube.com/watch?v=..." class="flex-grow p-4 lg:p-5 border border-gray-200 rounded-l-2xl focus:outline-none focus:ring-2 focus:ring-red-500 bg-white/60 text-base" />
+        <button id="generateBlogButton" class="px-6 lg:px-7 py-3 lg:py-4 rounded-r-2xl inline-flex items-center justify-center text-white bg-red-600 hover:bg-red-700 shadow-soft transition text-base lg:text-lg">Generate</button>
       </div>
       <p class="text-xs text-gray-500 mt-2">Your generated posts are saved to your account.</p>
     </div>
 
-    <div id="loading-circle" class="hidden mt-6 inline-flex items-center gap-2 text-red-700">
+    <div id="loading-circle" class="hidden mt-8 inline-flex items-center gap-3 text-red-700 text-base">
       <span class="loading-dot" style="background:#dc2626; box-shadow: 16px 0 0 #dc2626, 32px 0 0 #dc2626"></span>
       <span>Generating your article...</span>
     </div>
   </div>
 
-  <div class="rounded-3xl border border-white/60 bg-white/70 backdrop-blur p-6 shadow-soft min-h-[200px]">
-    <h3 class="text-xl font-semibold mb-3">Generated Article</h3>
-    <div id="blogContent" class="prose prose-red max-w-none"></div>
+  <div class="col-span-12 lg:col-span-5 xl:col-span-4 rounded-3xl border border-white/60 bg-white/70 backdrop-blur p-8 xl:p-10 shadow-soft min-h-[60vh]">
+    <h3 class="text-2xl font-semibold mb-4">Generated Article</h3>
+    <div id="blogContent" class="prose prose-red prose-lg xl:prose-xl max-w-none"></div>
   </div>
 </section>
 {% endblock %}
