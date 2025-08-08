@@ -15,15 +15,7 @@
       theme: {
         extend: {
           fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
-          colors: {
-            brand: {
-              50: '#f8f5ff', 100: '#efe9ff', 200: '#ddceff', 300: '#c0a3ff', 400: '#a178ff',
-              500: '#8a5bff', 600: '#6f3cff', 700: '#5a2de6', 800: '#4825b4', 900: '#3b2091'
-            }
-          },
-          boxShadow: {
-            soft: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)'
-          }
+          boxShadow: { soft: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)' }
         }
       }
     }
@@ -31,27 +23,30 @@
   <link rel="stylesheet" href="{% static 'app.css' %}">
   {% block head %}{% endblock %}
 </head>
-<body class="min-h-screen bg-gradient-to-br from-rose-50 via-violet-50 to-sky-50 text-gray-900">
+<body class="min-h-screen bg-gradient-to-br from-rose-50 via-red-50 to-orange-50 text-gray-900">
   <div aria-hidden="true" class="fixed inset-0 -z-10 overflow-hidden">
-    <div class="absolute -top-32 -right-24 h-80 w-80 rounded-full blur-3xl bg-gradient-to-br from-fuchsia-300/40 to-sky-300/40"></div>
-    <div class="absolute -bottom-32 -left-24 h-80 w-80 rounded-full blur-3xl bg-gradient-to-br from-rose-300/40 to-violet-300/40"></div>
+    <div class="absolute -top-32 -right-24 h-80 w-80 rounded-full blur-3xl bg-gradient-to-br from-rose-300/40 to-orange-300/40"></div>
+    <div class="absolute -bottom-32 -left-24 h-80 w-80 rounded-full blur-3xl bg-gradient-to-br from-red-300/40 to-rose-300/40"></div>
   </div>
 
   <nav class="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-white/60 bg-white/70 border-b border-white/40">
     <div class="max-w-7xl mx-auto px-4">
       <div class="flex justify-between items-center h-16">
         <a href="/" class="inline-flex items-center gap-2">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow-soft">AI</span>
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-rose-500 to-red-600 text-white shadow-soft">AI</span>
           <span class="font-semibold tracking-wide">YouTube → Blog</span>
         </a>
         <div class="flex items-center gap-2">
           {% if user.is_authenticated %}
             <span class="hidden sm:inline text-sm text-gray-600">Hi, {{ user.username }}</span>
-            <a class="btn-secondary" href="/blog-list">Saved Posts</a>
-            <a class="btn-ghost" href="/logout">Logout</a>
+            <a href="/blog-list" class="inline-flex items-center justify-center text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl shadow-soft transition">Saved Posts</a>
+            {% if user.is_staff or user.is_superuser %}
+              <a href="/admin/" class="inline-flex items-center justify-center text-white bg-gray-900 hover:bg-black px-3 py-2 rounded-xl transition">Admin</a>
+            {% endif %}
+            <a href="/logout" class="inline-flex items-center justify-center px-4 py-2 rounded-xl border border-red-300 text-red-700 hover:bg-red-50 transition">Logout</a>
           {% else %}
-            <a class="btn-ghost" href="/login">Login</a>
-            <a class="btn-primary" href="/signup">Sign Up</a>
+            <a class="inline-flex items-center justify-center px-4 py-2 rounded-xl border border-gray-200 hover:bg-white transition" href="/login">Login</a>
+            <a class="inline-flex items-center justify-center text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl shadow-soft transition" href="/signup">Sign Up</a>
           {% endif %}
         </div>
       </div>
@@ -62,7 +57,7 @@
     {% if messages %}
       <div class="space-y-2 mb-6">
         {% for message in messages %}
-          <div class="p-3 rounded-lg bg-violet-50 text-violet-800 border border-violet-100 shadow-sm">{{ message }}</div>
+          <div class="p-3 rounded-lg bg-red-50 text-red-800 border border-red-100 shadow-sm">{{ message }}</div>
         {% endfor %}
       </div>
     {% endif %}
@@ -74,7 +69,7 @@
     <div class="max-w-7xl mx-auto px-4">
       <div class="rounded-2xl border border-white/60 bg-white/70 backdrop-blur p-4 flex items-center justify-between text-sm text-gray-600">
         <span>© 2025 AI Blog Generator</span>
-        <a class="hover:text-gray-900 transition" href="https://www.youtube.com/codewithtomi" target="_blank" rel="noopener">Code With Tomi</a>
+        <span class="opacity-60"></span>
       </div>
     </div>
   </footer>
